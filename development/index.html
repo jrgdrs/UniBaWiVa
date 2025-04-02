@@ -1,0 +1,655 @@
+<!doctype html>
+<html class="highlight">
+
+<head>
+  <meta charset="utf-8">
+  <title>Jörg Drees: Sandbox for Justification Tests v0.05</title>
+
+  <script>
+
+    console.log( "Sandbox for Justification Tests for the EcTd project \n 'Unit based width variants of glyphs for balanced justification' \n Version 0.05 on 2025-03-30 \n Copyright (c) 2025, Jörg Drees, All rights reserved \n Developed on the basis of Bram Stein (c) 2009-2021 https://github.com/bramstein/hyphenation-justification-vf \n Font OHamburg from Jörg Drees (c) 2024-2025  https://github.com/jrgdrs/OHamburg \n");
+  </script>
+
+  <script src="src/linked-list.js"></script>
+  <script src="src/linebreak.js"></script>
+  <script src="src/knuth-and-plass.js"></script>
+  <script src="src/greedy.js"></script>
+  
+  <style type="text/css">
+
+    :root {
+      --unitizedColor: red;
+    }
+
+    @font-face {
+      font-family: TESTFONT;
+      src: url(OH.ttf);
+    }
+
+    html {
+      font-family: TESTFONT, monospace;
+      font-size: 24px;
+      font-variation-settings: "wght" 300, "xtra" 300, "wdth" 100;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .line {
+      display: flex;
+      justify-content: space-between;
+      line-height: 1.15;
+      position: relative;
+    }
+
+    .align-justify .line {
+      justify-content: space-between;
+    }
+
+    .align-center .line {
+      justify-content: center;
+    }
+
+    .align-left .line {
+      justify-content: flex-start;
+    }
+
+    .align-right .line {
+      justify-content: flex-end;
+    }
+
+    .highlight .line {
+      background-color: red;
+    }
+
+    .align-justify .line:last-child,
+    .align-left .line:last-child,
+    .align-right .line:last-child {
+      justify-content: flex-start;
+      background-color: white;
+    }
+
+    .align-right .line:last-child {
+      justify-content: flex-end;
+    }
+
+    .word {
+      background-color: white;
+      white-space: nowrap;
+    }
+
+    .space {
+      background-color: white;
+      min-width: 0;
+    }
+
+    .hyphen {
+      background-color: white;
+    }
+
+    .charts .line:last-child .score {
+      display: none;
+    }
+
+    .line .score {
+      display: none;
+    }
+
+    .charts .line .score {
+      position: absolute;
+      right: -150px;
+      display: block;
+    }
+
+    .score {
+      display: block;
+      width: 100px;
+      height: 1em;
+      background-color: transparent;
+      font-size: 10pt;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .score>div {
+      display: inline-block;
+      background-color: red;
+      height: 0.6em;
+      margin: 0.2em 0;
+      position: relative;
+      margin-left: 50px;
+      border-left: 2pt solid black;
+    }
+
+    __.score:after {
+      content: '';
+      background-color: black;
+      position: absolute;
+      left: 49px;
+      top: 0px;
+      width: 2px;
+      height: 1em;
+      display: inline-block;
+    }
+
+    .paragraph {
+      margin: 0 auto;
+    }
+
+    .toolbar {
+      padding: 0;
+      margin: 0;
+      line-height: .5em;
+      display: flex;
+      flex-flow: column wrap;
+      gap: 4px;
+      margin: 28px;
+      height: 90px;
+      width: 500px;
+      vertical-align: center;
+    }
+
+    .toolbar>div {
+      margin: 8px 8px;
+      background-color: 1pt solid lightblue;
+      height: 16px;
+      __padding: .5em;
+      margin-left: -10px;
+      margin-top: -10px;
+
+    }
+
+    .toolbar>div>label {
+      width: 8em;
+      padding-right: 6px;
+      text-align: right;
+      display: inline-block;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+    }
+
+    .switch {
+      vertical-align: text-bottom;
+      border: 1pt solid d3d3d3;
+      background-color: #666666;
+      color: white;
+      padding: 4px;
+    }
+
+    .slider {
+      height: 6px;
+    }
+
+    .button-group {
+      display: inline-flex;
+      list-style-type: none;
+
+      border: 1px solid #d3d3d3;
+      width: auto;
+      margin: 0;
+      padding: 0;
+    }
+
+    .button-group input[type="radio"] {
+      position: absolute;
+      left: -9999em;
+      top: -9999em;
+    }
+
+    .button-group label {
+      background-color: white;
+      display: inline-block;
+      _line-height: 14px;
+      _padding: 0.1em 0.3em;
+    }
+
+    .button-group :checked+label {
+      background-color: #3d86e0;
+    }
+
+    .button-group :checked+label>img {
+      opacity: 1;
+    }
+
+    .button-group img {
+      width: 1em;
+      height: .6em;
+      opacity: 0.5;
+    }
+
+    #sample {
+      padding: 2em 3em 2em 3em;
+      border: 1px solid #d3d3d3;
+      box-shadow: 0px 0px 58px -23px rgba(0, 0, 0, 1);
+    }
+
+    #info {
+      margin: 2em auto;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12pt;
+      width: 720px;
+      padding: 1em 0;
+      text-align: center;
+      color: #707070;
+      position: absolute;
+      top: 70px;
+      width: 100%;
+      z-index: -100;
+    }
+
+    .pone {
+      font-variation-settings: "wght" 300, "xtra" 300, "wdth" 110;
+      color: var(--unitizedColor);
+
+    }
+
+    @media print {
+      body {
+        background-color: white;
+      }
+      div.toolbar {
+        display: none;
+      }
+      div.sample {
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+      }
+      div#info {
+        position: absolute;
+        top: 800px;
+      }
+    }
+
+
+  </style>
+</head>
+
+<body>
+  <div class="toolbar">
+    <div class="switch">
+      <label for="algorithm">Line breaking: </label>
+      <select id="algorithm">
+        <option value="greedy">Greedy (single line)</option>
+        <option value="knuth-and-plass" selected>Knuth & Plass (paragraph)</option>
+      </select>
+    </div>
+    <div class="switch">
+      <label for="scaling">Glyph scaling: </label>
+      <select id="scaling">
+        <option value="none">None</option>
+        <option value="traditional">Traditional</option>
+        <option value="variable">Variable</option>
+        <option value="unitized" selected>Unitized</option>
+      </select>
+    </div>
+    <!--div class="switch">
+      <label for="alignment">Alignment:</label>
+      <ul id="alignment" class="button-group">
+        <li>
+          <input id="align-left" name="alignment" type="radio" name="align" value="align-left">
+          <label for="align-left"><img src="img/align-left.svg"></label>
+        </li>
+        <li>
+          <input id="align-right" name="alignment" type="radio" name="align" value="align-right">
+          <label for="align-right"><img src="img/align-right.svg"></label>
+        </li>
+        <li>
+          <input id="align-center" name="alignment" type="radio" name="align" value="align-center">
+          <label for="align-center"><img src="img/align-center.svg"></label>
+        </li>
+        <li>
+          <input id="align-justify" name="alignment" type="radio" name="align" value="align-justify" checked>
+          <label for="align-justify"><img src="img/align-justify.svg"></label>
+        </li>
+      </ul>
+    </div-->
+    <div class="switch">
+      <label for="hyphenation">Hyphenation:</label><input type="checkbox" id="hyphenation" checked>
+    </div>
+    <div class="switch">
+      <label for="measure">Measure:</label>
+      <input class="slider" id="measure" type="range" min="12" max="36" value="33">
+    </div>
+    <div class="switch">
+      <label for="overshootFactor">Optical Margin:</label>
+      <input class="slider" id="overshootFactor" type="range" min="0" max="10" value="9">
+    </div>
+    <!--div class="switch">
+      <label for="charts">Show charts:</label><input type="checkbox" id="charts">
+    </div-->
+    <div class="switch">
+      <label for="highlight">Highlight space:</label><input type="checkbox" id="highlight">
+    </div>
+  </div>
+
+  <div id="ruler"
+    style="visibility: hidden; position: absolute; top: -8000px; width: auto; display: inline; left: -8000px;">&nbsp;
+  </div>
+
+  <div id="sample" class="paragraph"></div>
+  <div id="info"></div>
+  
+  <script>
+
+
+    window.onload = function () {
+
+      // possible hyphens are integrated as vertical bar
+      let text = "In olden times when wish|ing still helped one, there lived a king whose daugh|ters were all beau|ti|ful; and the youngest was so beau|ti|ful that the sun it|self, which has seen so much, was as|ton|ished when|ever it shone in her face. Close by the king’s cas|tle lay a great dark for|est, and un|der an old lime-tree in the for|est was a well, and when the day was very warm, the king’s child went out to the for|est and sat down by the foun|tain; and when she was bored she took a golden ball, and threw it up on high and caught it; and this ball was her fa|vorite play|thing.";
+
+      text = "Am An|fang war das Wort. Das Wort war bei Gott, und das Wort war Gott selbst. Von An|fang an war es bei Gott. Al|les wur|de durch das Wort ge|schaf|fen; nichts ist oh|ne das Wort ent|stan|den. In ihm war das Le|ben, und die|ses Le|ben war das Licht für alle Men|schen. Es leuch|tet in der Fin|ster|nis, und die Fin|ster|nis hat es nicht aus|lö|schen kön|nen. Gott schick|te ei|nen Bo|ten, ei|nen Mann, der Jo|han|nes hieß. Sein Auf|trag war es, die Men|schen auf das Licht hin|zu|wei|sen. Al|le soll|ten durch sei|ne Bot|schaft an den glau|ben, der das Licht ist. ";
+
+      // Optischer Randausgleich (bislang nur auf rechter Satzkante)
+      ////var overshootFactor = .85; // Anteil der optischen Randausgleichs vom Zeichen, jetzt über Slider einstellbar
+      const overshootChars = ["-", ".", ":", ",", ";"];
+
+
+      let ruler = document.getElementById('ruler');
+      let sample = document.getElementById('sample');
+
+      function measureText(str) {
+        if (str === ' ') {
+          str = '\u00A0';
+        }
+        ruler.textContent = str;
+        return ruler.getClientRects()[0].width;
+      }
+
+      console.log("n width =", measureText("n"), "per 28th Unit =", measureText("n") / 28);
+
+      function getAlignment() {
+        let options = document.getElementsByName('alignment');
+        for (let i = 0; i < options.length; i++) {
+          if (options[i].checked) {
+            return options[i].value;
+          }
+        }
+        return 'align-left';
+      }
+
+      function typeset(nodes, breaks, measure, algorithm, overshootFactor, scaling) {
+        let container = document.createDocumentFragment();
+        let lineStart = 0;
+        let lines = [];
+        let totalSpace = 0;
+
+        for (let i = 1; i < breaks.length; i++) {
+          let point = breaks[i].position;
+          let ratio = breaks[i].ratio;
+
+          for (let j = lineStart; j < nodes.length; j++) {
+            if (nodes[j].type === 'box' || (nodes[j].type === 'penalty' && nodes.penalty === -linebreak.infinity)) {
+              lineStart = j;
+              break;
+            }
+          }
+          lines.push({ ratio, nodes: nodes.slice(lineStart, point + 1), position: point });
+          lineStart = point;
+        }
+
+        // zeilenausgabe
+        lines.forEach(function (line, lineIndex, lineArray) {
+          let lineElement = document.createElement('div');
+
+          lineElement.classList.add('line');
+          lineElement.setAttribute("id", lineIndex); //DS
+
+          lineElement.dataset.ratio = line.ratio;
+
+          let totalWidth = 0;
+
+          line.nodes.forEach(function (n, index, array) {
+            if (n.type === 'box' && n.value !== '') {
+              if (index > 0 && array[index - 1].type === 'penalty' && lineElement.lastChild) {
+                lineElement.lastChild.textContent += n.value;
+                totalWidth += n.width;
+              } else {
+                var word = document.createElement('div');
+                word.classList.add('word');
+                word.textContent = n.value;
+                lineElement.appendChild(word);
+                totalWidth += n.width;
+              }
+            } else if (n.type === 'glue' && n.width !== 0 && index < array.length - 1) {
+              var space = document.createElement('div');
+              space.textContent = '\u00A0';
+              space.classList.add('space');
+              lineElement.appendChild(space);
+              totalWidth += n.width;
+
+            } else if (n.type === 'penalty' && n.penalty === 100 && index === array.length - 1) {
+              var hyphen = document.createElement('span');
+              hyphen.textContent = '-';
+              hyphen.classList.add('hyphen');
+              lineElement.lastChild.appendChild(hyphen);
+              totalWidth += n.width;
+
+            }
+          });
+
+          let leftOverSpace = (measure - totalWidth);
+          let uiAddBarMargin = 0;
+
+          ///////////////////////////////////////////////////////////////////////////////////////////////
+          // No Scaling = just whitespace
+
+          if (scaling == 'none' && lineIndex !== lineArray.length - 1) {
+            // optischer randausgleich
+            let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
+            if (overshootChars.includes(overshootingChar)) {
+              lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure)) + "px";
+              uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
+            }
+          }
+
+          leftOverSpace += uiAddBarMargin;
+
+          ///////////////////////////////////////////////////////////////////////////////////////////////
+          // Traditional Scaling = unproportional letter scaling within limits, rest whitespaces
+
+          if (scaling == 'traditional' && lineIndex !== lineArray.length - 1) {
+            let maxTraditionalPercentageLimit = 10;
+            let traditionalPercentage = measure / totalWidth;
+            if (traditionalPercentage > 1) {
+              traditionalPercentage = Math.min(traditionalPercentage, 1 + maxTraditionalPercentageLimit / 100)
+            } else {
+              traditionalPercentage = Math.max(traditionalPercentage, 1 - maxTraditionalPercentageLimit / 100)
+            }
+            //console.log("traditionalPercentage", traditionalPercentage) // 0.98 nur bei Knuth, sonst nur pos. also bei max beschränken
+
+            lineElement.style.width = (parseInt(measure) / traditionalPercentage) + "px"
+            lineElement.style.transform = 'scale(' + traditionalPercentage + ',1)';
+            lineElement.style.transformOrigin = 'top left';
+            lineElement.style.position = 'relative';
+            lineElement.style.top = '0px';
+
+            // optischer randausgleich
+            let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
+            if (overshootChars.includes(overshootingChar)) {
+              lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure) / traditionalPercentage) + "px";
+              uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
+            }
+
+            leftOverSpace = measure - ( totalWidth * traditionalPercentage ) + uiAddBarMargin;
+          }
+
+          ///////////////////////////////////////////////////////////////////////////////////////////////
+          // Variable Scaling = ...
+
+          if (scaling == 'variable' && lineIndex !== lineArray.length - 1) {
+            let percentage = 15;
+            let leftOverPercentage = Math.abs((leftOverSpace / measure) * 100);
+            let actualPercentage = Math.min(leftOverPercentage, percentage);
+            let reduction = (measure / 100) * actualPercentage;
+
+            // font-variation-settings: "wght" 300, "xtra" 300, "wdth" 100;
+            if (leftOverSpace > 0) { // extend
+              leftOverSpace = (measure - totalWidth - reduction);
+              lineElement.style.fontVariationSettings = '"wght" 300, "xtra" 300, "wdth" ' + (100 + Math.min(actualPercentage, percentage));
+            } else { // shrink
+              leftOverSpace = (measure - totalWidth + reduction);
+              lineElement.style.fontVariationSettings = '"wght" 300, "xtra" 300, "wdth" ' + (100 - Math.min(actualPercentage, percentage));
+            }
+
+            // optischer randausgleich
+            let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
+            if (overshootChars.includes(overshootingChar)) {
+              lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure)) + "px";
+              uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
+            }
+
+            leftOverSpace =+ uiAddBarMargin;
+
+          }
+
+          ///////////////////////////////////////////////////////////////////////////////////////////////
+          // Unitized Scaling
+
+          let compensationSpace = leftOverSpace + 0;
+
+          if (scaling == 'unitized' && lineIndex !== lineArray.length - 1) {
+            let unitWidth = 0.41015625; // 1/28 n width
+            let content = lineElement.textContent;
+            let spaceCount = (content.match(/\s/g) || []).length;
+            // sequence of increasing disturbance
+            let needles = [
+              "e", "c", "s", "a",
+              "i", "f", "r", "t", "f",
+              "x", "w", "v", "z",
+              "p", "b", "q", "d", "g",
+              "m", "h", "u", "n", "o"
+            ];
+
+            needles.forEach(needle => {
+              let occ = (content.match(new RegExp(needle, "g")) || []).length;
+              // erweitern
+              if (occ * unitWidth <= compensationSpace) {
+                ///console.log(compensationSpace, needle, lineElement.innerHTML);
+                //lineElement.innerHTML = lineElement.innerHTML.replaceAll("&nbsp;", "--*--").replaceAll((new RegExp("(?<!<[^>]*)"+needle+"(?![^<]*>)", "g")), "<span class='pone'>" +  needle + "</span>").replaceAll( "--*--", "&nbsp;");
+                // wegen Unterschneidung erweitert um Großbuchstabe vor needle
+                lineElement.innerHTML = lineElement.innerHTML.replaceAll("&nbsp;", "--*--").replaceAll((new RegExp("(?<!<[^>]*)([A-Z]?)" + needle + "(?![^<]*>)", "g")), "<span class='pone'>$1" + needle + "</span>").replaceAll("--*--", "&nbsp;").replaceAll("</span><span class='pone'>", "");
+                compensationSpace -= occ * unitWidth;
+              }
+              //reduzieren machr keinen sinn mehr, da die zeile bereits kompress steht und reduzieren nur die whitespaces erweitern würde
+            });
+
+            // optischer randausgleich
+            let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
+            if (overshootChars.includes(overshootingChar)) {
+              lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure)) + "px";
+              uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
+            }
+
+            leftOverSpace = compensationSpace + uiAddBarMargin;
+
+
+          }
+
+
+          let score = document.createElement('div');
+          let bar = document.createElement('div');
+
+          bar.style.width = Math.abs(leftOverSpace) + uiAddBarMargin + 'px';
+          if (leftOverSpace > 0) {
+            bar.style.marginLeft = (50 - uiAddBarMargin) + 'px';
+          } else {
+            bar.style.marginLeft = (50 - Math.abs(leftOverSpace) - uiAddBarMargin) + 'px';
+          }
+
+          score.appendChild(bar);
+          score.classList.add('score');
+          score.innerHTML = leftOverSpace.toFixed(1);
+
+          lineElement.appendChild(score)
+
+          container.appendChild(lineElement);
+
+          if (lineIndex !== lineArray.length - 1) {
+            totalSpace += Math.abs(leftOverSpace);
+          }
+
+        });
+
+        sample.innerHTML = '';
+        sample.style.width = measure + 'px';
+        sample.appendChild(container);
+
+        return totalSpace;
+      }
+
+
+      function update() {
+        let html = document.documentElement;
+        let measure = document.getElementById('measure').value * 16; // wegen pica
+        let overshootFactor = document.getElementById('overshootFactor').value;
+        let alignment = "align-justify"; ///getAlignment();
+        let algorithmEl = document.getElementById('algorithm');
+        let algorithm = algorithmEl.options[algorithmEl.selectedIndex].value;
+        let scalingEl = document.getElementById('scaling');
+        let scaling = scalingEl.options[scalingEl.selectedIndex].value;
+        let hyphenation = document.getElementById('hyphenation').checked;
+        //let charts = document.getElementById('charts').checked;
+        let highlight = document.getElementById('highlight').checked;
+        let infoEl = document.getElementById('info');
+
+        if (!html.classList.contains('highlight') && highlight) {
+          html.classList.add('highlight');
+          document.documentElement.style.setProperty('--unitizedColor', 'blue');
+        } else if (html.classList.contains('highlight') && !highlight) {
+          html.classList.remove('highlight');
+          document.documentElement.style.setProperty('--unitizedColor', 'black');
+        }
+
+       /* if (!html.classList.contains('charts') && charts) {
+          html.classList.add('charts');
+        } else if (html.classList.contains('charts') && !charts) {
+          html.classList.remove('charts');
+        }*/
+
+        /*html.classList.remove('align-left');
+        html.classList.remove('align-right');
+        html.classList.remove('align-center');
+        html.classList.remove('align-justify');*/
+        html.classList.add(alignment);
+
+        let totalLeftOverSpace = 0;
+
+        if (algorithm === 'knuth-and-plass') { //|| algorithm === 'knuth-and-plass-variable'
+          let { nodes, breaks } = kap(text, measureText, alignment, measure, hyphenation);
+          totalLeftOverSpace = typeset(nodes, breaks, measure, algorithm, overshootFactor, scaling);
+        } else {
+          let { nodes, breaks } = greedy(text, measureText, alignment, measure, hyphenation);
+          totalLeftOverSpace = typeset(nodes, breaks, measure, algorithm, overshootFactor, scaling);
+        }
+
+        let str = totalLeftOverSpace.toFixed(1);
+        let pts = measure/4*3;
+        let picas = ( pts/12 );
+
+        infoEl.textContent = 'penalty: ' + str + ' (' + algorithm + ' line breaking / ' + scaling + ' glpyh scaling @ ' + picas + ' pica width)';
+
+        console.log("Penalty", str, algorithm, scaling, measure )
+      }
+
+      // Set up listeners.
+      document.getElementById('measure').addEventListener('input', update, false);
+      document.getElementById('overshootFactor').addEventListener('input', update, false);
+      ///document.getElementById('algorithm').addEventListener('change', update, false);
+      document.getElementById('scaling').addEventListener('change', update, false);
+      document.getElementById('hyphenation').addEventListener('change', update, false);
+      ///document.getElementById('charts').addEventListener('change', update, false);
+      document.getElementById('highlight').addEventListener('change', update, false);
+      var alignments = document.getElementsByName('alignment');
+      for (let i = 0; i < alignments.length; i++) {
+        alignments[i].addEventListener('change', update, false);
+      }
+
+      update();
+    };
+
+  </script>
+</body>
+
+</html>
