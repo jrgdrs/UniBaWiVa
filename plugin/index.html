@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="main.js"></script>
+  <style>
+    .wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      flex-direction: column;
+      display: flex;
+      padding: 12px;
+    }
+
+    h1 {
+      color: blanchedalmond;
+    }
+
+
+    uxp-panel {
+      padding: 0.2 1em;
+      overflow-y: auto;
+    }
+
+    header,
+    footer {
+      display: block;
+    }
+
+    sp-textfield {
+      width: 100%;
+    }
+
+    img {
+      border-radius: 4px;
+    }
+
+    body {
+      --info: #63fb5b;
+      --invalid: #F5A9B8;
+    }
+
+    /*    Style the .alert with the .alert-text*/
+    .alert {
+      padding: 4px 0;
+      margin-left: -10px;
+      margin-right: -10px;
+      /*Yellow*/
+      background-color: var(--info);
+      margin-bottom: 15px;
+    }
+
+    .alert__invalid {
+      background-color: var(--invalid);
+    }
+
+    .alert-text {
+      display: block;
+      margin: 4px 0;
+      padding: 0 20px;
+      color: black;
+    }
+
+    sp-heading {
+      margin: 10px 10px;
+    }
+
+    button {
+      margin: 5px 10px;
+      display: block;
+    }
+
+    sp-field-group {
+      display: flex;
+      flex-direction: column;
+      margin-left: 10px;
+      padding: 0;
+    }
+
+    sp-checkbox {
+      margin: 0px 5px;
+      padding: 0;
+    }
+  </style>
+
+</head>
+<body>
+  <sp-theme system="spectrum-two" scale="medium" color="light">
+    <header>
+      <sp-heading>Just with Units</sp-heading>
+    </header>
+    <div class="alert" id="selection-status-alert">
+      <sp-body class="alert-text">
+        Mode: <span id="mode">Loading...</span>
+      </sp-body>
+    </div>
+    <sp-heading size="XS">Preset</sp-heading>
+    <sp-field-group>
+      <sp-checkbox size="m" checked>Paragraph Composer</sp-checkbox>
+      <sp-checkbox size="m" checked>Hyphenation</sp-checkbox>
+      <sp-checkbox size="m" checked>Optical Margin</sp-checkbox>
+    </sp-field-group>
+    <sp-heading size="XS">Switches</sp-heading>
+    <sp-button-group></sp-button-group>
+    <button id="btnUniJust">Unitized Justification</button>
+    <button id="btnChangeJust">Compress Justification</button>
+    <button id="btnResetJust">Reset Justification</button>
+    <button id="btnExpandJust">Expand Justification</button>
+    </sp-button-group>
+  </sp-theme>
+</body>
+</html>
