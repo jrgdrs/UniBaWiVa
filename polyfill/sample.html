@@ -1,47 +1,49 @@
+<!doctype html>
 <html>
+
 <head>
+  <meta charset="utf-8">
 
-    <script src="../development/src/linked-list.js"></script>
-    <script src="../development/src/linebreak.js"></script>
-    <script src="../development/src/knuth-and-plass.js"></script>
-    <script src="../development/src/greedy.js"></script>
+  <script src="../development/src/linked-list.js"></script>
+  <script src="../development/src/linebreak.js"></script>
+  <script src="../development/src/knuth-and-plass.js"></script>
+  <script src="../development/src/greedy.js"></script>
 
-<style>
-
-@font-face {
+  <style>
+    @font-face {
       font-family: TESTFONT;
       src: url(../development/OH.ttf);
     }
 
-body {
-    font-family: TESTFONT;
-    font-variation-settings: "wght" 300, "xtra" 300, "wdth" 100;
-}
+    body {
+      font-family: TESTFONT;
+      font-variation-settings: "wght" 300, "xtra" 300, "wdth" 100;
+    }
 
-.qussen {
-  width: 400px;
-  height: 200px;
-  padding: 20px;
-  margin: 50px 50px;
-  background: lightgrey;
-}
-.justWithUnits {
-	width: 100%;
-	padding:0;
-	margin:0;
-	border:0;
-}
+    p {
+      border: 2pt solid yellow;
+      margin-bottom: 1em;
+    }
 
-.line {
+    .layoutbox {
+      width: 320px;
+      padding: 20px;
+      margin: 50px 30px;
+      background: lightgrey;
+    }
+
+    .justWithUnits {
+      width: 100%;
+      padding: 0;
+      margin: 6px 0px;
+      border: 0;
+    }
+
+    .line {
       display: flex;
       justify-content: space-between;
       line-height: 1.15;
       position: relative;
-
-      width: 100%;
-	padding:0;
-	margin:0;
-	border:0;
     }
 
     .align-justify .line {
@@ -60,354 +62,329 @@ body {
       justify-content: flex-end;
     }
 
-    .highlight .line {
-      background-color: red;
-    }
-
     .align-justify .line:last-child,
     .align-left .line:last-child,
     .align-right .line:last-child {
       justify-content: flex-start;
-      background-color: white;
+      __background-color: white;
     }
 
     .align-right .line:last-child {
       justify-content: flex-end;
     }
 
+    .line:last-child {
+      justify-content: flex-start;
+    }
+
     .word {
-      background-color: white;
+      __background-color: white;
       white-space: nowrap;
     }
 
     .space {
-      background-color: white;
+      __background-color: white;
       min-width: 0;
     }
 
     .hyphen {
-      background-color: white;
+      __background-color: white;
     }
+
 
     .pone {
       font-variation-settings: "wght" 300, "xtra" 300, "wdth" 110;
       color: var(--unitizedColor);
 
     }
-
-</style>
+  </style>
 </head>
+
 <body>
 
-<div class="qussen">
-<div class="justWithUnits"  >
-    	<p>The returned value is a DOMRect object which is the smallest rectangle which contains the entire element, including its padding and border-width. The left, top, right, bottom, x, y, width, and height properties describe the position and size of the overall rectangle in pixels. Properties other than width and height are relative to the top-left of the viewport.</p>
-    <p>The returned value is a DOMRect object which is the smallest rectangle which contains the entire element, including its padding and border-width. The left, top, right, bottom, x, y, width, and height properties describe the position and size of the overall rectangle in pixels. Properties other than width and height are relative to the top-left of the viewport.</p>
-</div>
+  <div class="layoutbox">
 
-</div>
+    <p class="justWithUnits large">In February and March John A. Lane repeated his series of lectures about the history
+      of printing types. We will organise the lessons again, but the exact dates are not yet planned. The lessons will
+      be taught in the classroom at Museum Plantin-Moretus in Antwerp, but international students can participate
+      remotely via Zoom, synchronously (in real time).</p>
+    <p class="justWithUnits">These lectures discuss the influence of manuscript and engraved letterforms on the form of
+      printing types from the
+      introduction of European movable type to the digital era, and the evolution of typographic letterforms.</p>
+    <p class="justWithUnits">They centre on the Latin alphabet in its most important forms: gothic and especially roman
+      and italic, including
+      sans-serif, but touch on non-Latin types. They present the types in the historical context of the manufacturing
+      technology, economic and cultural factors, politics and historical artistic styles (renaissance, baroque,
+      neoclassical, modernist, etc.).</p>
+    <p class="justWithUnits">They cover the work of the most important punchcutters and type designers from the earliest
+      roman types (Nicholas
+      Jenson, Francesco Griffo) to the late 20th century (Hermann Zapf, Adrian Frutiger).</p>
+    <p class="justWithUnits">We encourage students to take an active role by asking questions, comparing and discussing
+      the forms of different
+      types in class and bringing examples that interest them. The exact content therefore depends on the students.</p>
 
-<div id="sample" class="paragraph"></div>
+  </div>
 
-
-<div id="ruler"
+  <div id="ruler"
     style="visibility: hidden; position: absolute; top: -8000px; width: auto; display: inline; left: -8000px;">&nbsp;
   </div>
 
-<script>
+  <script>
 
-let elem = document.querySelector(".justWithUnits");
-let rect = elem.getBoundingClientRect();
+    window.onload = function () {
 
-const theMeasure =  rect["width"];
-console.log( "column width in px", theMeasure );
+      const theElementsList = document.querySelectorAll(".justWithUnits");
+      for (let i = 0; i < theElementsList.length; i++) {
 
-const theText = elem.innerHTML
+        var theElement = theElementsList[i];
+        let rect = theElement.getBoundingClientRect();
 
-/// akle
+        var theMeasure = rect["width"];
 
+        var theText = theElement.innerHTML.replace(/\s\s+/g, ' ');  // remove whitespace sequences
+        theElement.innerHTML = "";
 
-window.onload = function () {
+            // possible hyphens are integrated as vertical bar ##todo integrate hyphenator
+            let text = "In olden times when wish|ing still helped one, there lived a king whose daugh|ters were all beau|ti|ful; and the youngest was so beau|ti|ful that the sun it|self, which has seen so much, was as|ton|ished when|ever it shone in her face. Close by the king’s cas|tle lay a great dark for|est, and un|der an old lime-tree in the for|est was a well, and when the day was very warm, the king’s child went out to the for|est and sat down by the foun|tain; and when she was bored she took a golden ball, and threw it up on high and caught it; and this ball was her fa|vorite play|thing.";
 
-// possible hyphens are integrated as vertical bar
-let text = "In olden times when wish|ing still helped one, there lived a king whose daugh|ters were all beau|ti|ful; and the youngest was so beau|ti|ful that the sun it|self, which has seen so much, was as|ton|ished when|ever it shone in her face. Close by the king’s cas|tle lay a great dark for|est, and un|der an old lime-tree in the for|est was a well, and when the day was very warm, the king’s child went out to the for|est and sat down by the foun|tain; and when she was bored she took a golden ball, and threw it up on high and caught it; and this ball was her fa|vorite play|thing.";
+        let ruler = document.getElementById('ruler');
 
-text = "Am An|fang war das Wort. Das Wort war bei Gott, und das Wort war Gott selbst. Von An|fang an war es bei Gott. Al|les wur|de durch das Wort ge|schaf|fen; nichts ist oh|ne das Wort ent|stan|den. In ihm war das Le|ben, und die|ses Le|ben war das Licht für alle Men|schen. Es leuch|tet in der Fin|ster|nis, und die Fin|ster|nis hat es nicht aus|lö|schen kön|nen. Gott schick|te ei|nen Bo|ten, ei|nen Mann, der Jo|han|nes hieß. Sein Auf|trag war es, die Men|schen auf das Licht hin|zu|wei|sen. Al|le soll|ten durch sei|ne Bot|schaft an den glau|ben, der das Licht ist. ";
+        update(theText, theMeasure);
 
-text = theText;
-console.log( "text", text )
-
-// Optischer Randausgleich (bislang nur auf rechter Satzkante)
-////var overshootFactor = .85; // Anteil der optischen Randausgleichs vom Zeichen, jetzt über Slider einstellbar
-const overshootChars = ["-", ".", ":", ",", ";"];
-
-
-let ruler = document.getElementById('ruler');
-let sample = document.getElementById('sample');
-
-function measureText(str) {
-  if (str === ' ') {
-    str = '\u00A0';
-  }
-  ruler.textContent = str;
-  return ruler.getClientRects()[0].width;
-}
-
-console.log("n width =", measureText("n"), "per 28th Unit =", measureText("n") / 28);
-
-function getAlignment() {
-  let options = document.getElementsByName('alignment');
-  for (let i = 0; i < options.length; i++) {
-    if (options[i].checked) {
-      return options[i].value;
-    }
-  }
-  return 'align-left';
-}
-
-function typeset(nodes, breaks, measure, algorithm, overshootFactor, scaling) {
-  let container = document.createDocumentFragment();
-  let lineStart = 0;
-  let lines = [];
-  let totalSpace = 0;
-
-  for (let i = 1; i < breaks.length; i++) {
-    let point = breaks[i].position;
-    let ratio = breaks[i].ratio;
-
-    for (let j = lineStart; j < nodes.length; j++) {
-      if (nodes[j].type === 'box' || (nodes[j].type === 'penalty' && nodes.penalty === -linebreak.infinity)) {
-        lineStart = j;
-        break;
       }
-    }
-    lines.push({ ratio, nodes: nodes.slice(lineStart, point + 1), position: point });
-    lineStart = point;
-  }
 
-  // zeilenausgabe
-  lines.forEach(function (line, lineIndex, lineArray) {
-    let lineElement = document.createElement('div');
 
-    lineElement.classList.add('line');
-    lineElement.setAttribute("id", lineIndex); //DS
+      function measureText(str) {
+        if (str === ' ') {
+          str = '\u00A0';
+        }
+        ruler.textContent = str;
+        return ruler.getClientRects()[0].width;
+      }
 
-    lineElement.dataset.ratio = line.ratio;
+      function typeset(nodes, breaks, measure, algorithm, overshootFactor, scaling) {
+        let container = document.createDocumentFragment();
+        let lineStart = 0;
+        let lines = [];
+        let totalSpace = 0;
 
-    let totalWidth = 0;
+        for (let i = 1; i < breaks.length; i++) {
+          let point = breaks[i].position;
+          let ratio = breaks[i].ratio;
 
-    line.nodes.forEach(function (n, index, array) {
-      if (n.type === 'box' && n.value !== '') {
-        if (index > 0 && array[index - 1].type === 'penalty' && lineElement.lastChild) {
-          lineElement.lastChild.textContent += n.value;
-          totalWidth += n.width;
+          for (let j = lineStart; j < nodes.length; j++) {
+            if (nodes[j].type === 'box' || (nodes[j].type === 'penalty' && nodes.penalty === -linebreak.infinity)) {
+              lineStart = j;
+              break;
+            }
+          }
+          lines.push({ ratio, nodes: nodes.slice(lineStart, point + 1), position: point });
+          lineStart = point;
+        }
+
+
+        // Optischer Randausgleich (bislang nur auf rechter Satzkante)
+        ////var overshootFactor = .85; // Anteil der optischen Randausgleichs vom Zeichen, jetzt über Slider einstellbar
+        const overshootChars = ["-", ".", ":", ",", ";"];
+
+        // zeilenausgabe
+        lines.forEach(function (line, lineIndex, lineArray) {
+
+          let lineElement = document.createElement('div');
+
+          lineElement.classList.add('line');
+          lineElement.setAttribute("id", lineIndex); //DS
+          console.log(lineIndex);
+
+          lineElement.dataset.ratio = line.ratio;
+
+          let totalWidth = 0;
+
+          line.nodes.forEach(function (n, index, array) {
+            if (n.type === 'box' && n.value !== '') {
+              if (index > 0 && array[index - 1].type === 'penalty' && lineElement.lastChild) {
+                lineElement.lastChild.textContent += n.value;
+                totalWidth += n.width;
+              } else {
+                var word = document.createElement('div');
+                word.classList.add('word');
+                word.textContent = n.value;
+                lineElement.appendChild(word);
+                totalWidth += n.width;
+              }
+            } else if (n.type === 'glue' && n.width !== 0 && index < array.length - 1) {
+              var space = document.createElement('div');
+              space.textContent = '\u00A0';
+              space.classList.add('space');
+              lineElement.appendChild(space);
+              totalWidth += n.width;
+
+            } else if (n.type === 'penalty' && n.penalty === 100 && index === array.length - 1) {
+              var hyphen = document.createElement('span');
+              hyphen.textContent = '-';
+              hyphen.classList.add('hyphen');
+              lineElement.lastChild.appendChild(hyphen);
+              totalWidth += n.width;
+
+            }
+          });
+
+          let leftOverSpace = (measure - totalWidth);
+          let uiAddBarMargin = 0;
+
+          ///////////////////////////////////////////////////////////////////////////////////////////////
+          // No Scaling = just whitespace
+
+          if (scaling == 'none' && lineIndex !== lineArray.length - 1) {
+            // optischer randausgleich
+            let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
+            if (overshootChars.includes(overshootingChar)) {
+              lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure)) + "px";
+              uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
+            }
+          }
+
+          leftOverSpace += uiAddBarMargin;
+
+          ///////////////////////////////////////////////////////////////////////////////////////////////
+          // Traditional Scaling = unproportional letter scaling within limits, rest whitespaces
+
+          if (scaling == 'traditional' && lineIndex !== lineArray.length - 1) {
+            let maxTraditionalPercentageLimit = 10;
+            let traditionalPercentage = measure / totalWidth;
+            if (traditionalPercentage > 1) {
+              traditionalPercentage = Math.min(traditionalPercentage, 1 + maxTraditionalPercentageLimit / 100)
+            } else {
+              traditionalPercentage = Math.max(traditionalPercentage, 1 - maxTraditionalPercentageLimit / 100)
+            }
+            //console.log("traditionalPercentage", traditionalPercentage) // 0.98 nur bei Knuth, sonst nur pos. also bei max beschränken
+
+            lineElement.style.width = (parseInt(measure) / traditionalPercentage) + "px"
+            lineElement.style.transform = 'scale(' + traditionalPercentage + ',1)';
+            lineElement.style.transformOrigin = 'top left';
+            lineElement.style.position = 'relative';
+            lineElement.style.top = '0px';
+
+            // optischer randausgleich
+            let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
+            if (overshootChars.includes(overshootingChar)) {
+              lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure) / traditionalPercentage) + "px";
+              uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
+            }
+
+            leftOverSpace = measure - (totalWidth * traditionalPercentage) + uiAddBarMargin;
+          }
+
+          ///////////////////////////////////////////////////////////////////////////////////////////////
+          // Variable Scaling = ...
+
+          if (scaling == 'variable' && lineIndex !== lineArray.length - 1) {
+            let percentage = 15;
+            let leftOverPercentage = Math.abs((leftOverSpace / measure) * 100);
+            let actualPercentage = Math.min(leftOverPercentage, percentage);
+            let reduction = (measure / 100) * actualPercentage;
+
+            // font-variation-settings: "wght" 300, "xtra" 300, "wdth" 100;
+            if (leftOverSpace > 0) { // extend
+              leftOverSpace = (measure - totalWidth - reduction);
+              lineElement.style.fontVariationSettings = '"wght" 300, "xtra" 300, "wdth" ' + (100 + Math.min(actualPercentage, percentage));
+            } else { // shrink
+              leftOverSpace = (measure - totalWidth + reduction);
+              lineElement.style.fontVariationSettings = '"wght" 300, "xtra" 300, "wdth" ' + (100 - Math.min(actualPercentage, percentage));
+            }
+
+            // optischer randausgleich
+            let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
+            if (overshootChars.includes(overshootingChar)) {
+              lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure)) + "px";
+              uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
+            }
+
+            leftOverSpace = + uiAddBarMargin;
+
+          }
+
+          ///////////////////////////////////////////////////////////////////////////////////////////////
+          // Unitized Scaling
+
+          let compensationSpace = leftOverSpace + 0;
+
+          if (scaling == 'unitized' && lineIndex !== lineArray.length - 1) {
+            let unitWidth = 0.41015625; // 1/28 n width
+            let content = lineElement.textContent;
+            let spaceCount = (content.match(/\s/g) || []).length;
+            // sequence of increasing disturbance
+            let needles = [
+              "e", "c", "s", "a",
+              "i", "f", "r", "t", "f",
+              "x", "w", "v", "z",
+              "p", "b", "q", "d", "g",
+              "m", "h", "u", "n", "o"
+            ];
+
+            needles.forEach(needle => {
+              let occ = (content.match(new RegExp(needle, "g")) || []).length;
+              // erweitern
+              if (occ * unitWidth <= compensationSpace) {
+                ///console.log(compensationSpace, needle, lineElement.innerHTML);
+                //lineElement.innerHTML = lineElement.innerHTML.replaceAll("&nbsp;", "--*--").replaceAll((new RegExp("(?<!<[^>]*)"+needle+"(?![^<]*>)", "g")), "<span class='pone'>" +  needle + "</span>").replaceAll( "--*--", "&nbsp;");
+                // wegen Unterschneidung erweitert um Großbuchstabe vor needle
+                lineElement.innerHTML = lineElement.innerHTML.replaceAll("&nbsp;", "--*--").replaceAll((new RegExp("(?<!<[^>]*)([A-Z]?)" + needle + "(?![^<]*>)", "g")), "<span class='pone'>$1" + needle + "</span>").replaceAll("--*--", "&nbsp;").replaceAll("</span><span class='pone'>", "");
+                compensationSpace -= occ * unitWidth;
+              }
+              //reduzieren machr keinen sinn mehr, da die zeile bereits kompress steht und reduzieren nur die whitespaces erweitern würde
+            });
+
+            // optischer randausgleich
+            let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
+            if (overshootChars.includes(overshootingChar)) {
+              lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure)) + "px";
+              uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
+            }
+
+            leftOverSpace = compensationSpace + uiAddBarMargin;
+
+          }
+
+          container.appendChild(lineElement);
+
+          if (lineIndex !== lineArray.length - 1) {
+            totalSpace += Math.abs(leftOverSpace);
+          }
+
+        })
+
+        theElement.appendChild(container);
+
+        return totalSpace;
+
+      }
+
+      function update(text, theMeasure) {
+        let html = document.documentElement;
+        let measure = theMeasure;
+        let overshootFactor = 9; // 0-10
+        let alignment = "align-justify";
+        let algorithm = "knuth-and-plass";
+        let scaling = "unitized";
+        let hyphenation = "true";
+
+        let totalLeftOverSpace = 0;
+
+        if (algorithm === 'knuth-and-plass') { 
+          let { nodes, breaks } = kap(text, measureText, alignment, measure, hyphenation);
+          totalLeftOverSpace = typeset(nodes, breaks, measure, algorithm, overshootFactor, scaling);
         } else {
-          var word = document.createElement('div');
-          word.classList.add('word');
-          word.textContent = n.value;
-          lineElement.appendChild(word);
-          totalWidth += n.width;
+          let { nodes, breaks } = greedy(text, measureText, alignment, measure, hyphenation);
+          totalLeftOverSpace = typeset(nodes, breaks, measure, algorithm, overshootFactor, scaling);
         }
-      } else if (n.type === 'glue' && n.width !== 0 && index < array.length - 1) {
-        var space = document.createElement('div');
-        space.textContent = '\u00A0';
-        space.classList.add('space');
-        lineElement.appendChild(space);
-        totalWidth += n.width;
 
-      } else if (n.type === 'penalty' && n.penalty === 100 && index === array.length - 1) {
-        var hyphen = document.createElement('span');
-        hyphen.textContent = '-';
-        hyphen.classList.add('hyphen');
-        lineElement.lastChild.appendChild(hyphen);
-        totalWidth += n.width;
-
+        console.log("Penalty", totalLeftOverSpace)
       }
-    });
-
-    let leftOverSpace = (measure - totalWidth);
-    let uiAddBarMargin = 0;
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // No Scaling = just whitespace
-
-    if (scaling == 'none' && lineIndex !== lineArray.length - 1) {
-      // optischer randausgleich
-      let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
-      if (overshootChars.includes(overshootingChar)) {
-        lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure)) + "px";
-        uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
-      }
-    }
-
-    leftOverSpace += uiAddBarMargin;
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // Traditional Scaling = unproportional letter scaling within limits, rest whitespaces
-
-    if (scaling == 'traditional' && lineIndex !== lineArray.length - 1) {
-      let maxTraditionalPercentageLimit = 10;
-      let traditionalPercentage = measure / totalWidth;
-      if (traditionalPercentage > 1) {
-        traditionalPercentage = Math.min(traditionalPercentage, 1 + maxTraditionalPercentageLimit / 100)
-      } else {
-        traditionalPercentage = Math.max(traditionalPercentage, 1 - maxTraditionalPercentageLimit / 100)
-      }
-      //console.log("traditionalPercentage", traditionalPercentage) // 0.98 nur bei Knuth, sonst nur pos. also bei max beschränken
-
-      lineElement.style.width = (parseInt(measure) / traditionalPercentage) + "px"
-      lineElement.style.transform = 'scale(' + traditionalPercentage + ',1)';
-      lineElement.style.transformOrigin = 'top left';
-      lineElement.style.position = 'relative';
-      lineElement.style.top = '0px';
-
-      // optischer randausgleich
-      let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
-      if (overshootChars.includes(overshootingChar)) {
-        lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure) / traditionalPercentage) + "px";
-        uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
-      }
-
-      leftOverSpace = measure - ( totalWidth * traditionalPercentage ) + uiAddBarMargin;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // Variable Scaling = ...
-
-    if (scaling == 'variable' && lineIndex !== lineArray.length - 1) {
-      let percentage = 15;
-      let leftOverPercentage = Math.abs((leftOverSpace / measure) * 100);
-      let actualPercentage = Math.min(leftOverPercentage, percentage);
-      let reduction = (measure / 100) * actualPercentage;
-
-      // font-variation-settings: "wght" 300, "xtra" 300, "wdth" 100;
-      if (leftOverSpace > 0) { // extend
-        leftOverSpace = (measure - totalWidth - reduction);
-        lineElement.style.fontVariationSettings = '"wght" 300, "xtra" 300, "wdth" ' + (100 + Math.min(actualPercentage, percentage));
-      } else { // shrink
-        leftOverSpace = (measure - totalWidth + reduction);
-        lineElement.style.fontVariationSettings = '"wght" 300, "xtra" 300, "wdth" ' + (100 - Math.min(actualPercentage, percentage));
-      }
-
-      // optischer randausgleich
-      let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
-      if (overshootChars.includes(overshootingChar)) {
-        lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure)) + "px";
-        uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
-      }
-
-      leftOverSpace =+ uiAddBarMargin;
 
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // Unitized Scaling
-
-    let compensationSpace = leftOverSpace + 0;
-
-    if (scaling == 'unitized' && lineIndex !== lineArray.length - 1) {
-      let unitWidth = 0.41015625; // 1/28 n width
-      let content = lineElement.textContent;
-      let spaceCount = (content.match(/\s/g) || []).length;
-      // sequence of increasing disturbance
-      let needles = [
-        "e", "c", "s", "a",
-        "i", "f", "r", "t", "f",
-        "x", "w", "v", "z",
-        "p", "b", "q", "d", "g",
-        "m", "h", "u", "n", "o"
-      ];
-
-      needles.forEach(needle => {
-        let occ = (content.match(new RegExp(needle, "g")) || []).length;
-        // erweitern
-        if (occ * unitWidth <= compensationSpace) {
-          ///console.log(compensationSpace, needle, lineElement.innerHTML);
-          //lineElement.innerHTML = lineElement.innerHTML.replaceAll("&nbsp;", "--*--").replaceAll((new RegExp("(?<!<[^>]*)"+needle+"(?![^<]*>)", "g")), "<span class='pone'>" +  needle + "</span>").replaceAll( "--*--", "&nbsp;");
-          // wegen Unterschneidung erweitert um Großbuchstabe vor needle
-          lineElement.innerHTML = lineElement.innerHTML.replaceAll("&nbsp;", "--*--").replaceAll((new RegExp("(?<!<[^>]*)([A-Z]?)" + needle + "(?![^<]*>)", "g")), "<span class='pone'>$1" + needle + "</span>").replaceAll("--*--", "&nbsp;").replaceAll("</span><span class='pone'>", "");
-          compensationSpace -= occ * unitWidth;
-        }
-        //reduzieren machr keinen sinn mehr, da die zeile bereits kompress steht und reduzieren nur die whitespaces erweitern würde
-      });
-
-      // optischer randausgleich
-      let overshootingChar = lineElement.lastChild ? lineElement.lastChild.textContent[lineElement.lastChild.textContent.length - 1] : "";
-      if (overshootChars.includes(overshootingChar)) {
-        lineElement.style.width = (measureText(overshootingChar) * overshootFactor / 10 + parseInt(measure)) + "px";
-        uiAddBarMargin = measureText(overshootingChar) * overshootFactor / 10;
-      }
-
-      leftOverSpace = compensationSpace + uiAddBarMargin;
-
-
-    }
-
-    container.appendChild(lineElement);
-
-    if (lineIndex !== lineArray.length - 1) {
-      totalSpace += Math.abs(leftOverSpace);
-    }
-
-  });
-
-  sample.innerHTML = '';
-  sample.style.width = theMeasure + 'px';
-  sample.appendChild(container);
-
-  
-  elem.appendChild(container);
-
-  return totalSpace;
-}
-
-
-function update() {
-  let html = document.documentElement;
-  let measure = theMeasure;
-
-  let overshootFactor = 9;
-  let alignment = "align-justify"; ///getAlignment();
-
-  let algorithm = "knuth-and-plass";
-
-  let scaling = "variable";
-  let hyphenation = "true";
-  let highlight = false;
-
-//  html.classList.add(alignment);
-
-  let totalLeftOverSpace = 0;
-
-  if (algorithm === 'knuth-and-plass') { //|| algorithm === 'knuth-and-plass-variable'
-    let { nodes, breaks } = kap(text, measureText, alignment, measure, hyphenation);
-    totalLeftOverSpace = typeset(nodes, breaks, measure, algorithm, overshootFactor, scaling);
-  } else {
-    let { nodes, breaks } = greedy(text, measureText, alignment, measure, hyphenation);
-    totalLeftOverSpace = typeset(nodes, breaks, measure, algorithm, overshootFactor, scaling);
-  }
-
-
-  console.log("Penalty", totalLeftOverSpace)
-}
-
-/* / Set up listeners.
-document.getElementById('measure').addEventListener('input', update, false);
-document.getElementById('overshootFactor').addEventListener('input', update, false);
-///document.getElementById('algorithm').addEventListener('change', update, false);
-document.getElementById('scaling').addEventListener('change', update, false);
-document.getElementById('hyphenation').addEventListener('change', update, false);
-///document.getElementById('charts').addEventListener('change', update, false);
-document.getElementById('highlight').addEventListener('change', update, false);
-var alignments = document.getElementsByName('alignment');
-for (let i = 0; i < alignments.length; i++) {
-  alignments[i].addEventListener('change', update, false);
-}
-  */
-
-update();
-};
-
-</script>
+  </script>
 </body>
+
 </html>
