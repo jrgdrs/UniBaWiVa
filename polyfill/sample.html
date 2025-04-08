@@ -104,7 +104,7 @@
 
   <div class="layoutbox">
 
-    <p class="justWithUnits large">In February and March John A. Lane repeated his series of lectures about the history
+    <p class="justWithUnits">In February and March John A. Lane repeated his series of lectures about the history
       of printing types. We will organise the lessons again, but the exact dates are not yet planned. The lessons will
       be taught in the classroom at Museum Plantin-Moretus in Antwerp, but international students can participate
       remotely via Zoom, synchronously (in real time).</p>
@@ -144,7 +144,7 @@
         var theText = theElement.innerHTML.replace(/\s\s+/g, ' ');  // remove whitespace sequences
         theElement.innerHTML = "";
 
-            // possible hyphens are integrated as vertical bar ##todo integrate hyphenator
+            // possible hyphens are integrated as vertical bar ##todo integrate hyphenator or https://github.com/mnater/Hyphenopoly
             let text = "In olden times when wish|ing still helped one, there lived a king whose daugh|ters were all beau|ti|ful; and the youngest was so beau|ti|ful that the sun it|self, which has seen so much, was as|ton|ished when|ever it shone in her face. Close by the king’s cas|tle lay a great dark for|est, and un|der an old lime-tree in the for|est was a well, and when the day was very warm, the king’s child went out to the for|est and sat down by the foun|tain; and when she was bored she took a golden ball, and threw it up on high and caught it; and this ball was her fa|vorite play|thing.";
 
         let ruler = document.getElementById('ruler');
@@ -366,8 +366,8 @@
         let overshootFactor = 9; // 0-10
         let alignment = "align-justify";
         let algorithm = "knuth-and-plass";
-        let scaling = "unitized";
-        let hyphenation = "true";
+        let scaling = "variable";
+        let hyphenation = true;
 
         let totalLeftOverSpace = 0;
 
