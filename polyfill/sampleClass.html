@@ -1,121 +1,67 @@
 <!doctype html>
 <html>
-
 <head>
   <meta charset="utf-8">
-
-  <script src="../development/src/linked-list.js"></script>
-  <script src="../development/src/linebreak.js"></script>
-  <script src="../development/src/knuth-and-plass.js"></script>
-  <script src="../development/src/greedy.js"></script>
-
+  <script src="./Hyphenopoly_Loader.js"></script>
+  <script>
+      Hyphenopoly.config({
+          require: {
+              "en-us": "FORCEHYPHENOPOLY",
+              "de": "Silbentrennungsalgorithmus"
+          },
+          setup: {
+              selectors: {
+                  ".hyphenate": {
+                      hyphen: "|"
+                  }
+              }
+          }
+      });
+  
+      Hyphenopoly.hyphenators.HTML.then((hyn) => {
+          hyn(document.getElementById("hyphenatebox"));
+      });
+  </script>
+  
   <script src="./JustWithUnits.js"></script>
 
+
+
   <style>
-    @font-face {
-      font-family: TESTFONT;
-      src: url(../development/OH.ttf);
+    .layoutbox {
+      width: 100mm;
+      padding: 30px;
+      margin: 30px;
+      background: rgb(228, 228, 220);
     }
-
-    body {
-      font-family: TESTFONT;
-      font-variation-settings: "wght" 300, "xtra" 300, "wdth" 100;
-    }
-
     p {
-      margin-bottom: 1em;
+      font-size: 18pt; 
+      line-height:1.1em;
+      margin:0; margin-block-end: 1em;
       font-variant-numeric: oldstyle-nums; 
     }
-
-    .layoutbox {
-      width: 320px;
-      padding: 20px;
-      margin: 50px 30px;
-      background: lightgrey;
-    }
-
-    _.justWithUnits {
-      width: 100%;
-      padding: 0;
-      margin: 6px 0px;
-      border: 0;
-    }
-
-    .line {
-      display: flex;
-      justify-content: space-between;
-      line-height: 1.15;
-      position: relative;
-    }
-
-    .align-justify .line {
-      justify-content: space-between;
-    }
-
-    .align-center .line {
-      justify-content: center;
-    }
-
-    .align-left .line {
-      justify-content: flex-start;
-    }
-
-    .align-right .line {
-      justify-content: flex-end;
-    }
-
-    .align-justify .line:last-child,
-    .align-left .line:last-child,
-    .align-right .line:last-child {
-      justify-content: flex-start;
-      __background-color: white;
-    }
-
-    .align-right .line:last-child {
-      justify-content: flex-end;
-    }
-
-    .line:last-child {
-      justify-content: flex-start;
-    }
-
-    .word {
-      __background-color: white;
-      white-space: nowrap;
-    }
-
-    .space {
-      __background-color: white;
-      min-width: 0;
-    }
-
-    .hyphen {
-      __background-color: white;
-    }
-
-    .pone {
-      font-variation-settings: "wght" 300, "xtra" 300, "wdth" 110;
-      color: var(--unitizedColor);
-    }
-
   </style>
 </head>
-
 <body>
-
-  <div class="layoutbox">
+  <div class="layoutbox" id="hyphenatebox">
     <p>In February and March John A. Lane repeated his series of lectures about the history
       of printing types. We will organise the lessons again, but the exact dates are not yet planned. The lessons will
       be taught in the classroom at Museum Plantin-Moretus in Antwerp, but international students can participate
       remotely via Zoom, synchronously (in real time).</p>
-    <p>These lectures discuss the influence of manuscript and engraved letterforms on the form of
-      printing types from the
-      introduction of European movable type to the digital era, and the evolution of typographic letter|forms.</p>
-    <p>They centre on the Latin alphabet in its most important forms: gothic and especially roman
-      and italic, including
-      sans-serif, but touch on non-Latin types. They present the types in the historical context of the manufacturing
-      technology, economic and cultural factors, politics and historical artistic styles (renaissance, baroque,
-      neo|classical, modernist, etc.).</p>
+    <p>The|se lec|tu|res dis|cuss the in|flu|ence of ma|nu|script and en|gra|ved let|ter|forms on the form of
+      prin|ting ty|pes from the
+      in|tro|duc|tion of Eu|ro|pe|an mov|able type to the di|gi|tal era, and the evo|lu|tion of ty|po|gra|phic let|ter|forms. The|se lec|tu|res dis|cuss the in|flu|ence of ma|nu|script and en|gra|ved let|ter|forms on the form of
+      prin|ting ty|pes from the
+      in|tro|duc|tion of Eu|ro|pe|an mov|able type to the di|gi|tal era, and the evo|lu|tion of ty|po|gra|phic let|ter|forms. The|se lec|tu|res dis|cuss the in|flu|ence of ma|nu|script and en|gra|ved let|ter|forms on the form of
+      prin|ting ty|pes from the
+      in|tro|duc|tion of Eu|ro|pe|an mov|able type to the di|gi|tal era, and the evo|lu|tion of ty|po|gra|phic let|ter|forms. The|se lec|tu|res dis|cuss the in|flu|ence of ma|nu|script and en|gra|ved let|ter|forms on the form of
+      prin|ting ty|pes from the
+      in|tro|duc|tion of Eu|ro|pe|an mov|able type to the di|gi|tal era, and the evo|lu|tion of ty|po|gra|phic let|ter|forms.</p>
+    <p>They centre on the La|tin al|pha|bet in its most im|por|tant forms: go|thic and espe|cial|ly ro|man
+      and ita|lic, in|clu|ding
+      sans-se|rif, but touch on non-La|tin types. They pre|sent the types in the hi|sto|ri|cal con|text of the ma|nu|factu|ring
+      tech|no|lo|gy, eco|nomic and cul|tu|ral fac|tors, po|li|tics and histo|ri|cal ar|ti|stic sty|les (re|nais|san|ce, ba|roque,
+      neo|clas|si|cal, mo|der|nist, etc.).</p>
     <p>They cover the work of the most important punch|cutters and type designers from the earliest
       roman types (Nicholas
       Jenson, Francesco Griffo) to the late 20th century (Hermann Zapf, Adrian Frutiger).</p>
@@ -123,13 +69,8 @@
       the forms of dif|fe|rent
       types in class and bringing examples that interest them. The exact content therefore depends on the students.</p>
   </div>
-
-  <div id="ruler"
-    style="visibility: hidden; position: absolute; top: -8000px; width: auto; display: inline; left: -8000px;">&nbsp;
-  </div>
-
-  <script type="text/javascript">window.onload = function () { new JustWithUnits( 'p' ); }</script>
-
+  <script type="text/javascript">
+    window.onload = function () { new JustWithUnits( 'p' )}; //, { overshootPercentage: 90, scaling: "unitized", alignment: "align-left", algorithm: "knuth-and-plass", hyphenation: true } ); }
+  </script>
 </body>
-
 </html>
