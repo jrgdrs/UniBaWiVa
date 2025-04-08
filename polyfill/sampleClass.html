@@ -2,31 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <script src="./Hyphenopoly_Loader.js"></script>
-  <script>
-      Hyphenopoly.config({
-          require: {
-              "en-us": "FORCEHYPHENOPOLY",
-              "de": "Silbentrennungsalgorithmus"
-          },
-          setup: {
-              selectors: {
-                  ".hyphenate": {
-                      hyphen: "|"
-                  }
-              }
-          }
-      });
-  
-      Hyphenopoly.hyphenators.HTML.then((hyn) => {
-          hyn(document.getElementById("hyphenatebox"));
-      });
-  </script>
-  
   <script src="./JustWithUnits.js"></script>
-
-
-
   <style>
     .layoutbox {
       width: 100mm;
@@ -43,7 +19,7 @@
   </style>
 </head>
 <body>
-  <div class="layoutbox" id="hyphenatebox">
+  <div class="layoutbox">
     <p>In February and March John A. Lane repeated his series of lectures about the history
       of printing types. We will organise the lessons again, but the exact dates are not yet planned. The lessons will
       be taught in the classroom at Museum Plantin-Moretus in Antwerp, but international students can participate

@@ -43,8 +43,6 @@ var JustWithUnits = (function () {
   // SCOPE DEFINITON
   var implemented_by = 'jrgdrs'
 
-  import { hyphenators } from './hyphenators';
-
   // FUNCTION
   function JustWithUnits (querySelection, userConfig ) {
 
