@@ -154,7 +154,7 @@ var JustWithUnits = (function () {
       }
 
       // Optischer Randausgleich (bislang nur auf rechter Satzkante)
-      const overshootChars = ['-', '.', ':', ',', ';']
+      const overshootChars = ['‐', '-', '.', ':', ',', ';']
 
       // zeilenausgabe
       lines.forEach(function (line, lineIndex, lineArray) {
@@ -201,7 +201,7 @@ var JustWithUnits = (function () {
             index === array.length - 1
           ) {
             var hyphen = document.createElement('span')
-            hyphen.textContent = '-'
+            hyphen.textContent = '-' // uni2010 immer noch
             hyphen.classList.add('hyphen')
             lineElement.lastChild.appendChild(hyphen)
             totalWidth += n.width
@@ -435,7 +435,7 @@ function greedy(text, measureText, alignment, measure, hyphenation, wsMinPercent
     text = text.replace(/\|/g, '');
   }
 
-  let hyphenWidth = measureText('-') - ( measureText('-') * overshootPercentage / 100 );
+  let hyphenWidth = measureText('-') - ( measureText('-') * overshootPercentage / 100 );  //uni2010
   let spaceWidth = measureText('\u00A0') * wsOptPercentage / 100; 
 
   let nodes = text.split(/(\s|-|\|)/).map(function (fragment) {  // extended by already exisitng hyphen
@@ -506,7 +506,7 @@ function kap(text, measureText, alignment, measure, hyphenation, wsMinPercentage
     text = text.replace(/\|/g, '');
   }
 
-  let hyphenWidth = measureText('-');
+  let hyphenWidth = measureText('-'); //uni2010
   let spaceWidth = measureText('\u00A0');
   let nodes = [];
 
