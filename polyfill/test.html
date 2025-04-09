@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="./JustWithUnits.js"></script>
+
+  <style>
+    .comparebox {
+      width: 61mm;
+      padding: 8mm;
+      margin:  8mm 16mm;
+      background: rgb(228, 228, 210);
+      height: 244mm;
+      overflow-y: hidden;
+
+      hyphens: auto; 
+      text-align: justify;
+    }
+
+    .layoutbox {
+      position: absolute; top: 0; left: 82mm;
+      width: 61mm;
+      padding: 8mm;
+      margin: 8mm 16mm;
+      background: rgb(228, 228, 210);
+      height: 244mm;
+      overflow-y: hidden;
+    }
+
+    p {
+      font-size: 12pt;
+      line-height: 1.2em;
+      margin: 0;
+      font-variant-numeric: oldstyle-nums;
+      text-indent: .7em;
+    }
+
+    p.first { text-indent: 0; }
+  </style>
+
+</head>
+
+<body>
+  <div class="comparebox" lang="en">
+    <p class="first">In February and March John A. Lane repeated his series of lectures about the history of printing types. We will organise the lessons again, but the exact dates are not yet planned. The lessons will be taught in the classroom at Museum Plantin-Moretus in Antwerp, but international students can participate remotely via Zoom, synchronously (in real time).</p>
+    <p>These lectures discuss the influence of manuscript and engraved letterforms on the form of printing types from the introduction of European movable type to the digital era, and the evolution of typographic letterforms.</p>
+    <p>They centre on the Latin alphabet in its most important forms: gothic and especially roman and italic, including sans-serif, but touch on non-Latin types. They present the types in the historical context of the manufacturing technology, economic and cultural factors, politics and historical artistic styles (renaissance, baroque, neoclassical, modernist, etc.).</p>
+    <p>They cover the work of the most important punchcutters and type designers from the earliest roman types (Nicholas Jenson, Francesco Griffo) to the late 20th century (Hermann Zapf, Adrian Frutiger).</p>
+    <p>We encourage students to take an active role by asking questions, comparing and discussing the forms of different types in class and bringing examples that interest them. The exact content therefore depends on the students.</p>
+  </div>
+
+  <div class="layoutbox">
+    <p class="first">In February and March John A. Lane repeated his series of lectures about the history of printing types. We will organise the lessons again, but the exact dates are not yet planned. The lessons will be taught in the classroom at Museum Plantin-Moretus in Antwerp, but international students can participate remotely via Zoom, synchronously (in real time).</p>
+    <p>These lectures discuss the influence of manuscript and engraved letterforms on the form of printing types from the introduction of European movable type to the digital era, and the evolution of typographic letterforms.</p>
+    <p>They centre on the Latin alphabet in its most important forms: gothic and especially roman and italic, including sans-serif, but touch on non-Latin types. They present the types in the historical context of the manufacturing technology, economic and cultural factors, politics and historical artistic styles (renaissance, baroque, neoclassical, modernist, etc.).</p>
+    <p>They cover the work of the most important punchcutters and type designers from the earliest roman types (Nicholas Jenson, Francesco Griffo) to the late 20th century (Hermann Zapf, Adrian Frutiger).</p>
+    <p>We encourage students to take an active role by asking questions, comparing and discussing the forms of different types in class and bringing examples that interest them. The exact content therefore depends on the students.</p>
+  </div>
+
+  <script type="text/javascript">
+    window.onload = function () {
+      let a = new JustWithUnits('.comparebox p none', { 
+        scaling: "none",
+        algorithm: "knuth-and-plass", 
+      });
+      let b = new JustWithUnits('.layoutbox p', { 
+        scaling: "unitized", 
+        algorithm: "knuth-and-plass", 
+      });
+
+      /* also possible to work with user configurated parameters, see description in JustWithUnits.js
+
+            new JustWithUnits('p', { 
+              overshootPercentage: 90, 
+              scaling: "unitized", 
+              alignment: "align-justify", 
+              algorithm: "knuth-and-plass", 
+              hyphenation: true 
+            } ); 
+
+      */
+
+    }
+  </script>
+</body>
+
+</html>
